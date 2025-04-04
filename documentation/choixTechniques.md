@@ -20,9 +20,6 @@ J'ai décidé d'utiliser MySql car je souhaitais avoir une base de données rela
 
 J'ai choisi de ne pas forcément aller chercher le TypeScript et de rester sur du JavaScript afin de ne pas me perdre entre les deux langages, en plus d'utiliser donc Node qui nous permettra une bonne flexibilité
 
-==============================================================================
-==============================================================================
-
 # Structure de l'Authentification
 
 ## Dashboard

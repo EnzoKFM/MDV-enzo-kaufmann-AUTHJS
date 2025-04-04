@@ -1,0 +1,56 @@
+1. Comment définiriez-vous l'authentification ? (Quels sont ses mécanismes, à quoi sert-elle ?)
+L'Authentification est un service permettant de sécuriser et fiabiliser une partie de son site web.
+L'Authentification consiste à créer une connexion (à partir d'un couple clé/motdepasse ou d'un SSO) entre le client local et le serveur distant afin que le serveur puisse vérifier les permissions de l'utilisateur et de pouvoir le laisser acceder à ce dont il peut voir/faire.
+
+2. Quelles sont les différences avec l'authorisation ?
+L'authentification est la première phase de la connexion. Un lien est crée entre l'utilisateur et le serveur. 
+L'authorisation est la seconde phase de la connexion. On donne à chaque utilisateur des permissions propre à lui sur le site.
+
+3. Qu'est-ce qu'un facteur d'authentification ?
+Un facteur d'authentification est un moyen qui permet de s'authentifier sur un site web. 
+On peut partir de "Multiples Facteurs d'Atuhentification" quand on va demander plusieurs facteurs l'un après l'autre pour se connecter (afin de mieux sécuriser la connexion)
+Exemple : Un mot de passe, une clé physique (Yubikey, etc..)..
+
+4. Citez 3 méthodes d'authentification
+La première méthode est le couple "username/password", devenu clairement la méthode par défault d'authentification sur quasiment tous les sites web.
+La seconde méthode est l'OTP (One-Time Password, ou mot de passe à usage unique).
+La troisième méthode est l'Authentification Multifacteur. On utilise plusieurs méthodes d'authentifications.
+
+5. Qu'est-ce que le hashage ?
+Le hashage est une méthode de cryptage de données. Elle consiste à modifier la donnée d'une manière à ce que le résultat n'ait plus rien à voir avec l'entrée et que cela soit indescriptible.
+
+6. À quoi sert le sel dans le hashage ?
+Le sel permet de rajouter par dessus le hashage un bout de donnée aléatoire afin de rendre la donnée encore plus sécurisé et d'éviter le bruteforce ou le déchiffrage.
+
+7. Qu'est-ce que le chiffrement ?
+Le chiffrement est une méthide de cryptage de données. On modifie la donnée afin qu'elle ne soit plus lisible par une clé que seul la personne possédant la donnée de base reçoit. La donnée n'est déchiffrable que par cette clé.
+
+8. Qu'est-ce que l'attaque par force brute ? Et comment s'en prémunir ?
+L'attaque par force brute (ou butreforce) est une attaque de donnée de faible niveau, dans laquel un utilisateur néfaste va tenter de trouver un mot de passe en utilisant toute les différentes combinaisons qui peuvent exister. Plus la donnée est longue et utilise des caractère différents, plus le temps de l'attaque sera longue
+
+9. Quels sont les points d'attentions lors d'un développement d'un système d'authentification ? (architecture, code, dépendences, etc...)
+Lors du développement d'un système d'authentification, il faut savoir d'abord faire attention aux dépendances utilisés, que la date de la dernière mise à jour ne remonte pas trop lointain.
+Ensuite, il faut faire attention à bloquer tout utilisateur voulant rentrer dans le système d'authentification de force (Modification de l'URL par exemple)
+Il faut également faire attention à ce que l'architecture de l'authentification ne soit pas trop longue, pour éviter le moins de faille possible. La rapidité et l'efficacité doivent être les maitres mots d'un système d'authentifcation
+
+10. Expliquer le principe d'authentification multifacteur ?
+L'authentification multifacteur consiste à utiliser plusieurs méthodes d'authentifications à la suite afin de sécuriser l'entrée de l'utilisateur dans le système.
+
+11. Qu'est-ce qu'une attaque CSRF ? Comment peut-on s'en protéger ?
+Une attaque CSRF est une attaque dans laquel un utilisateur néfaste se fait passer pour un administrateur du site et demande à un utilisateur de faire différentes choses afin de récupérer des informations.
+On peut s'en protéger en vérifiant toujours d'ou vient les e-mails, les URL des sites qui peuvent nous être envoyés.
+
+12. Expliquez ce que représente pour vous le principe de session, de cookies et de headers.
+L'idée de la session est d'être un lien actif entre l'utilisateur et le serveur. Cela permet au serveur de surveiller l'utilisateur, et cela permet à l'utilisateur d'avoir accès à différentes choses. 
+Les "cookies" sont des données envoyés par l'utilisateur vers le serveur, que celui-ci va collecter afin de les garder. Ils peuvent servir pour vérifier une connexion par exemple.
+Enfin, un "header" est un paramètre qui permet d'informer le serveur d'une manière plus spécifique.
+
+13. Par quel protocole est sécurisé l'échange d'information entre un client web et un serveur web ? Expliquez les grands principes
+L'échange d'information entre un client web et un serveur web est sécurisé par le protocole HTTPS.
+Le protocole HTTPS, jumeau du protocole HTTP, consiste à crypter les informations échangés entre le client et le serveur afin que si un utilisateur néfaste souhaite récupérer des informations au milieu, il n'ait que des données indescriptibles.
+
+14. Qu'est-ce qu'un token JWT ? De quoi est-il composé ?
+Un token JWT est un token conservé en tant que "cookie" qui permet au serveur de savoir quel utilisateur est connecté. Il est composé de différentes informations de l'utilisateur mais aussi d'une clé secrète que seul le serveur connait qui lui permet de déchiffrer le token.
+
+15. Qu'est-ce que l'OAuth 2 ? Qu'est-ce qu'il résoud ?
+L'OAuth 2 est un protocole d'autorisation permettant d'accéder à des données d'un site web sans devoir utiliser un protocole d'authentification. Il permet de résoudre le problème d'avoir à utiliser un protocole d'authentification, ce qui peut être dangereux en cas de faille de sécurité.

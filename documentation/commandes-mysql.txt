@@ -1,0 +1,8 @@
+CREATE DATABASE authentification_eval;
+USE authentification_eval;
+CREATE TABLE user(id int not null primary key auto_increment, username varchar(255) not null, password varchar(255) not null, role varchar(255) not null, totpSecret varchar(255), mfaValidated boolean default false);
+INSERT INTO user(username, password, role) VALUES ("pignon", "$2b$10$SkHieEgdhFWg6hw5xyemVOUShki23AYBRSAFJ7y6pmJqJGydz3HAm", "admin");
+
+##### informations utilisateur admin
+username : pignon
+password : 12345

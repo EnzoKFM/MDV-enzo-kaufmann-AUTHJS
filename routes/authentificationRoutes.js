@@ -6,7 +6,6 @@ import dotenv from 'dotenv';
 //OTP
 import QRCode from 'qrcode';
 import {TOTP, Secret} from 'otpauth';
-import { updateUserOTP } from "../models/userModel.js";
 
 dotenv.config();
 
@@ -102,7 +101,6 @@ const login = async (req, res) => {
 
 const changeUserRole = async (req,res) => {
     const { username, newRole } = req.body;
-    console.log(req.body);
 
     setUserRole(username, newRole);
 

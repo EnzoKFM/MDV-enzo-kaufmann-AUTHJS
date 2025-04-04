@@ -18,8 +18,8 @@
                 <select name="newRole" name="pets" id="pet-select">
                     <option value="etudiant">Étudiant</option>
                     <option value="intervenant">Intervenant</option>
-                    <option value="admin">Admin</option>
                 </select>
+                
                 <input type="hidden" value=<%= user.username %> name="username" />
                 <% if (user.role != "admin") { %>
                     <input type="submit" value="Modifier">

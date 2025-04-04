@@ -7,6 +7,9 @@
 <body>
     <h1>Liste des Etudiants</h1>
 
+    <% etudiantsList.forEach(etudiant => {%>
+        <p>ID : <%=etudiant.id %> ; Username : <%= etudiant.username %></p>
+    <% });  %>
     
     <br/><br/><br/><a href="http://localhost:3000/apiauth/dashboard">Revenir sur le Dashboard</a>
 </body>

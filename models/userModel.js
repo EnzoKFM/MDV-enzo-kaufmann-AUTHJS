@@ -16,9 +16,24 @@ const findUser = async (name) => {
     return user;
 }
 
-const updateUserOTP = async (name, totpSecret, mfaValidated) => {
-    await db.query(`UPDATE user SET totpSecret = ${totpSecret}, mfaValidated=${mfaValidated} WHERE username=${name}`)
+const findAllUsers = async (name) => {
+    const user = await db.query(`SELECT * from user`)
+    return user;
 }
 
-export {createUser, findUser, updateUserOTP}
+const findUserByRole = async (role) => {
+    const user = await db.query(`SELECT * from user where role="${role}"`)
+    return user;
+}
+
+const updateUserRole = async (name, role) => {
+    await db.query(`UPDATE user SET role = "${role}" WHERE username="${name}"`)
+}
+
+const updateUserOTP = async (name, totpSecret, mfaValidated) => {
+    await db.query(`UPDATE user SET totpSecret = "${totpSecret}", mfaValidated=${mfaValidated} WHERE username="${name}"`)
+}
+
+
+export {createUser, findUser, findAllUsers, findUserByRole, updateUserRole, updateUserOTP}
 

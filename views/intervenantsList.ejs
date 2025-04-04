@@ -7,6 +7,9 @@
 <body>
     <h1>Liste des Intervenants</h1>
 
+    <% intervenantsList.forEach(intervenant => {%>
+        <p>ID : <%=intervenant.id %> ; Username : <%= intervenant.username %></p>
+    <% });  %>
     
     <br/><br/><br/><a href="http://localhost:3000/apiauth/dashboard">Revenir sur le Dashboard</a>
 </body>

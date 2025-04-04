@@ -1,10 +1,12 @@
 import { Router } from "express";
 import jwt from 'jsonwebtoken';
-import { createNewUser, verifyUser, getUserDetails, setOTPDetails } from "../controllers/userController.js"
+import { createNewUser, verifyUser, getUserDetails, getAllUsers, getUsersByRole, setUserRole, setOTPDetails } from "../controllers/userController.js"
 import dotenv from 'dotenv';
-// import QRCode from 'qrcode';
-// import {TOTP, Secret} from 'otpauth';
-// import { updateUserOTP } from "../models/userModel.js";
+
+//OTP
+import QRCode from 'qrcode';
+import {TOTP, Secret} from 'otpauth';
+import { updateUserOTP } from "../models/userModel.js";
 
 dotenv.config();
 
@@ -90,13 +92,22 @@ const login = async (req, res) => {
         const user = await getUserDetails(username);
         const token = jwt.sign({username:username, role:user.role}, jwtSecretKey, { expiresIn: '1h' })
         res.cookie('token', token, {httpOnly : true});
-        // req.session.user = {username:username, totpSecret:user.totpSecret, mfaValidated:user.mfaValidated};
-        // req.session.authenticated = true;
+        req.session.user = {username:username, totpSecret:user.totpSecret, mfaValidated:user.mfaValidated};
+        req.session.authenticated = true;
         res.redirect("/apiauth/dashboard");
     } else {
         res.send("Mauvais Mot de Passe");
-    }
-    
+    }   
+}
+
+const changeUserRole = async (req,res) => {
+    const { username, newRole } = req.body;
+    console.log(req.body);
+
+    setUserRole(username, newRole);
+
+    res.redirect("/apiauth/adminPanel");
+
 }
 
 // Inscription
@@ -116,11 +127,6 @@ router.post('/login', login)
 // Dashboard
 router.get('/dashboard', authenticate, (req,res) => {
     res.render('dashboard', { username: req.user.username, role:req.user.role });
-    // if (req.session.authenticated && req.session.user.mfaValidated) {
-    //     res.render('dashboard', { username: req.user.username });
-    // } else {
-    //     res.redirect('/');
-    // }
 })
 
 // Détails de l'étudiant
@@ -129,14 +135,27 @@ router.get('/etudiantDetails', isEtudiant, (req,res) => {
 })
 
 // Liste des Etudiants
-router.get('/etudiantsList', isIntervenant, (req,res) => {
-    res.render('etudiantsList');
+router.get('/etudiantsList', isIntervenant, async (req,res) => {
+    const etudiantsList = await getUsersByRole("etudiant");
+    res.render('etudiantsList', {etudiantsList});
 })
 
 // Liste des Intervenants
-router.get('/intervenantsList', isAdmin, (req,res) => {
-    res.render('intervenantsList');
+router.get('/intervenantsList', isAdmin, async (req,res) => {
+    if (req.session.authenticated && req.session.user.mfaValidated) {
+        const intervenantsList = await getUsersByRole("intervenant");
+        res.render('intervenantsList', {intervenantsList});
+    } else {
+        res.redirect('/apiauth/dashboard');
+    }
 })
+
+router.get('/adminPanel', isAdmin, async (req,res) => {
+    const usersList = await getAllUsers();
+    res.render('adminPanel', {usersList});
+})
+
+router.post('/adminPanel', changeUserRole)
 
 // Déconnexion
 router.get('/logout', (req,res) => {
@@ -144,51 +163,51 @@ router.get('/logout', (req,res) => {
     res.redirect('/');
 })
 
-//2FA
-// router.get('/verify', async (req, res) => {
-//     if (!req.session.authenticated) return res.redirect('/');
+// OTP
+router.get('/verify', async (req, res) => {
+    if (!req.session.authenticated) return res.redirect('/');
 
-//     if (!req.session.user.totpSecret) {
-//         // Générer une clé TOTP
-//         const totp = new TOTP({
-//             issuer: 'MFA-Demo-App',
-//             label: req.session.user.username,
-//             algorithm: 'SHA1',
-//             digits: 6,
-//             period: 30
-//         });
-//         req.session.user.totpSecret = totp.secret.base32;
-//         const otpauthUrl = totp.toString(); // format otpauth://...
-//         const qr = await QRCode.toDataURL(otpauthUrl); // génération d'un qrcode pour l'ajout dans un authenticator
+    if (!req.session.user.totpSecret) {
+        // Générer une clé TOTP
+        const totp = new TOTP({
+            issuer: 'CiveLampus',
+            label: req.session.user.username,
+            algorithm: 'SHA1',
+            digits: 6,
+            period: 30
+        });
+        req.session.user.totpSecret = totp.secret.base32;
+        const otpauthUrl = totp.toString(); // format otpauth://...
+        const qr = await QRCode.toDataURL(otpauthUrl); // génération d'un qrcode pour l'ajout dans un authenticator
 
-//         return res.render('verify', { qr });
-//     }
-//     res.render('verify', { qr: null });
-// });
+        return res.render('verify', { qr });
+    }
+    res.render('verify', { qr: null });
+});
 
-// router.post('/verify', (req, res) => {
-//     const { otpToken } = req.body;
+router.post('/verify', (req, res) => {
+    const { otpToken } = req.body;
 
-//     const totp = new TOTP({
-//         issuer: 'MFA-Demo-App',
-//         label: req.session.user.username,
-//         algorithm: 'SHA1',
-//         digits: 6,
-//         period: 30,
-//         secret: Secret.fromBase32(req.session.user.totpSecret)
-//     });
+    const totp = new TOTP({
+        issuer: 'CiveLampus',
+        label: req.session.user.username,
+        algorithm: 'SHA1',
+        digits: 6,
+        period: 30,
+        secret: Secret.fromBase32(req.session.user.totpSecret)
+    });
 
-//     const now = Date.now();
-//     const delta = totp.validate({ otpToken, timestamp: now });
+    const now = Date.now();
+    const delta = totp.validate({ token: otpToken, timestamp: now });
 
-//     if (delta !== null) {
-//         req.session.user.mfaValidated = true
-//         updateUserOTP(req.session.user.username, req.session.user.totpSecret, req.session.user.mfaValidated)
-//         res.redirect('/apiauth/dashboard');
-//     } else {
-//         res.send('Code TOTP invalide.');
-//     }
-// });
+    if (delta !== null) {
+        req.session.user.mfaValidated = true
+        setOTPDetails(req.session.user.username, req.session.user.totpSecret, req.session.user.mfaValidated)
+        res.redirect('/apiauth/intervenantsList');
+    } else {
+        res.send('Code TOTP invalide.');
+    }
+});
 
 
 export default router; 

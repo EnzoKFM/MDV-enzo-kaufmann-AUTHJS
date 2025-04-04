@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin</title>
+</head>
+<body>
+    <h1>Liste des Utilisateurs</h1>
+
+    <div style="display:grid; grid-template-columns: repeat(5, 1fr);">
+    <% usersList.forEach(user => {%>
+        <div>
+            <form method="POST" action="http://localhost:3000/apiauth/adminPanel">
+                <p>ID : <%=user.id %> </p>
+                <p>Username : <%= user.username %></p>
+                <p>Role : <%=user.role %></p>
+            
+                <select name="newRole" name="pets" id="pet-select">
+                    <option value="etudiant">Étudiant</option>
+                    <option value="intervenant">Intervenant</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <input type="hidden" value=<%= user.username %> name="username" />
+                <% if (user.role != "admin") { %>
+                    <input type="submit" value="Modifier">
+                <% } %>
+            </form>
+        </div>
+    <% });  %>
+    </div>
+    
+    <br/><br/><br/><a href="http://localhost:3000/apiauth/dashboard">Revenir sur le Dashboard</a>
+</body>
+</html>

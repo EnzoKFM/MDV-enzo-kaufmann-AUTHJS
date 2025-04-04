@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Bienvenue sur votre compte, <%= username %></h1>
+    <% if (role === "etudiant") { %>
+        <a href="http://localhost:3000/apiauth/etudiantDetails">Accéder aux détails de votre compte étudiant</a>
+    <% } else if (role === "intervenant") {%>
+        <a href="http://localhost:3000/apiauth/etudiantsList">Accéder à la liste des étudiants</a>
+    <% } else if (role === "admin") {%>
+        <a href="http://localhost:3000/apiauth/etudiantsList">Accéder à la liste des étudiants</a><br/><br/>
+        <a href="http://localhost:3000/apiauth/intervenantsList">Accéder à la liste des intervenants</a>
+    <% } %>
+    
+    <br/><br/><br/><a href="http://localhost:3000/apiauth/logout">Se déconnecter</a>
+</body>
+</html>
